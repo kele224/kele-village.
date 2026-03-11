@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kele Village | Excellence Coranique</title>
     
-    <!-- Configuration PWA & Mobile -->
+    <!-- Meta tags pour PWA -->
     <meta name="theme-color" content="#064e3b">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Kele Village">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2800/2800045.png">
+    <link rel="apple-touch-icon" href="1773229755524.png">
     
-    <!-- Lien Manifest Dynamique (Généré par JS plus bas) -->
+    <!-- Lien Manifest -->
     <link id="manifest-link" rel="manifest">
 
     <style>
@@ -35,7 +36,6 @@
             background-attachment: fixed;
             color: #fff;
             min-height: 100vh;
-            user-select: none;
         }
 
         header { 
@@ -56,6 +56,21 @@
             cursor: pointer;
             font-size: 0.8rem;
             font-weight: bold;
+        }
+
+        /* Bouton d'installation spécial PWA */
+        #pwa-install-btn {
+            display: none;
+            background: var(--gold);
+            color: black;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
 
         h1 { font-size: 1.8rem; color: var(--gold); text-shadow: 0 2px 10px rgba(212, 175, 55, 0.5); flex-grow: 1; }
@@ -105,75 +120,77 @@
     <button class="tab-btn" id="tab-game-btn" onclick="showTab('jeux')">Mémorisation</button>
 </div>
 
-<!-- LECTURE -->
-<div id="lecture" class="container tab-content">
-    <div class="card">
-        <button class="btn btn-download" onclick="downloadContent('lec')" id="dl-btn-lec">⬇ TÉLÉCHARGER POUR MODE HORS-LIGNE</button>
-        <div class="progress-bar" id="progress-bar-lec"><div class="progress-fill" id="progress-fill-lec"></div></div>
-        
-        <label data-key="reciter">Récitateur</label>
-        <select id="lec-reciter">
-            <option value="ar.alafasy">Mishary Alafasy</option>
-            <option value="ar.husary">Hussary (Murattal)</option>
-            <option value="ar.ahmedajamy">Ahmed Al-Ajmy</option>
-            <option value="ar.mahermuaiqly">Maher Al-Muaiqly</option>
-            <option value="ar.abdulsamad">Abdul Basit (Murattal)</option>
-        </select>
-        <label data-key="surah">Sourate</label>
-        <select id="lec-surah" onchange="updateLimit('lec')"></select>
-        <div style="display: flex; gap: 10px;">
-            <div style="flex:1"><label data-key="start">Début</label><input type="number" id="lec-start" value="1"></div>
-            <div style="flex:1"><label data-key="end">Fin</label><input type="number" id="lec-end" value="7"></div>
-        </div>
-        <label data-key="repeats">Répétitions</label>
-        <input type="number" id="lec-rep" value="1" min="1">
-        <button class="btn" id="btn-start-lec" onclick="startLecture()">Lancer la Lecture</button>
-    </div>
-    <div class="card" id="lec-display" style="display:none">
-        <div id="lec-status" style="text-align:center; color:var(--gold); font-size:0.8rem"></div>
-        <div id="lec-arabic" class="arabic"></div>
-        <div id="lec-french" class="translation-text"></div>
-        <audio id="audio-player" controls style="width:100%"></audio>
-    </div>
-</div>
+<div class="container">
+    <!-- Bouton d'installation qui apparaît si Chrome le permet -->
+    <button id="pwa-install-btn" onclick="installPWA()">✨ INSTALLER L'APPLICATION</button>
 
-<!-- JEUX -->
-<div id="jeux" class="container tab-content" style="display:none">
-    <div class="card">
-        <button class="btn btn-download" onclick="downloadContent('game')" id="dl-btn-game">⬇ TÉLÉCHARGER POUR MODE HORS-LIGNE</button>
-        <div class="progress-bar" id="progress-bar-game"><div class="progress-fill" id="progress-fill-game"></div></div>
-
-        <label data-key="config_game">Défi</label>
-        <select id="game-surah" onchange="updateLimit('game')"></select>
-        <div style="display: flex; gap: 10px;">
-            <div style="flex:1"><label data-key="start">De</label><input type="number" id="game-start" value="1"></div>
-            <div style="flex:1"><label data-key="end">À</label><input type="number" id="game-end" value="7"></div>
+    <!-- SECTION LECTURE -->
+    <div id="lecture" class="tab-content">
+        <div class="card">
+            <button class="btn btn-download" onclick="downloadContent('lec')" id="dl-btn-lec">⬇ TÉLÉCHARGER HORS-LIGNE</button>
+            <div class="progress-bar" id="progress-bar-lec"><div class="progress-fill" id="progress-fill-lec"></div></div>
+            
+            <label data-key="reciter">Récitateur</label>
+            <select id="lec-reciter">
+                <option value="ar.alafasy">Mishary Alafasy</option>
+                <option value="ar.husary">Hussary (Murattal)</option>
+                <option value="ar.mahermuaiqly">Maher Al-Muaiqly</option>
+                <option value="ar.abdulsamad">Abdul Basit (Murattal)</option>
+            </select>
+            <label data-key="surah">Sourate</label>
+            <select id="lec-surah" onchange="updateLimit('lec')"></select>
+            <div style="display: flex; gap: 10px;">
+                <div style="flex:1"><label data-key="start">Début</label><input type="number" id="lec-start" value="1"></div>
+                <div style="flex:1"><label data-key="end">Fin</label><input type="number" id="lec-end" value="7"></div>
+            </div>
+            <label data-key="repeats">Répétitions</label>
+            <input type="number" id="lec-rep" value="1" min="1">
+            <button class="btn" id="btn-start-lec" onclick="startLecture()">Lancer la Lecture</button>
         </div>
-        <label data-key="flow">Progression</label>
-        <select id="game-flow">
-            <option value="successive" data-key="successive">Successive (Ordre)</option>
-            <option value="random" data-key="random">Aléatoire (Mixte)</option>
-        </select>
-        <label data-key="mode">Type de Jeu</label>
-        <select id="game-mode">
-            <option value="missing" data-key="m1">1. Mot Manquant</option>
-            <option value="sequence" data-key="m2">2. Ordonner le verset</option>
-            <option value="dictation" data-key="m3">3. Dictée Audio</option>
-            <option value="flash" data-key="m4">4. Flash (Visuel)</option>
-            <option value="truefalse" data-key="m5">5. Vrai ou Faux ?</option>
-            <option value="pivot" data-key="m6">6. Mot Pivot (Avant/Après)</option>
-            <option value="wordcount" data-key="m7">7. Compteur de Mots</option>
-            <option value="rhyme" data-key="m8">8. Rime (Finir le verset)</option>
-        </select>
-        <button class="btn" id="btn-start-game" onclick="initGame('start')">Commencer le Jeu</button>
+        <div class="card" id="lec-display" style="display:none">
+            <div id="lec-status" style="text-align:center; color:var(--gold); font-size:0.8rem"></div>
+            <div id="lec-arabic" class="arabic"></div>
+            <div id="lec-french" class="translation-text"></div>
+            <audio id="audio-player" controls style="width:100%"></audio>
+        </div>
     </div>
 
-    <div id="game-area" class="card" style="display:none">
-        <div class="nav-group">
-            <button class="btn btn-nav" id="btn-prev" onclick="navGame(-1)">« Précédent</button>
-            <button class="btn btn-nav" id="btn-next" onclick="navGame(1)">Suivant »</button>
+    <!-- SECTION JEUX -->
+    <div id="jeux" class="tab-content" style="display:none">
+        <div class="card">
+            <button class="btn btn-download" onclick="downloadContent('game')" id="dl-btn-game">⬇ TÉLÉCHARGER HORS-LIGNE</button>
+            <div class="progress-bar" id="progress-bar-game"><div class="progress-fill" id="progress-fill-game"></div></div>
+            <label data-key="config_game">Défi</label>
+            <select id="game-surah" onchange="updateLimit('game')"></select>
+            <div style="display: flex; gap: 10px;">
+                <div style="flex:1"><label data-key="start">De</label><input type="number" id="game-start" value="1"></div>
+                <div style="flex:1"><label data-key="end">À</label><input type="number" id="game-end" value="7"></div>
+            </div>
+            <label data-key="flow">Progression</label>
+            <select id="game-flow">
+                <option value="successive" data-key="successive">Successive</option>
+                <option value="random" data-key="random">Aléatoire</option>
+            </select>
+            <label data-key="mode">Type de Jeu</label>
+            <select id="game-mode">
+                <option value="missing" data-key="m1">1. Mot Manquant</option>
+                <option value="sequence" data-key="m2">2. Ordonner le verset</option>
+                <option value="dictation" data-key="m3">3. Dictée Audio</option>
+                <option value="flash" data-key="m4">4. Flash</option>
+                <option value="truefalse" data-key="m5">5. Vrai ou Faux ?</option>
+                <option value="pivot" data-key="m6">6. Mot Pivot</option>
+                <option value="wordcount" data-key="m7">7. Compteur</option>
+                <option value="rhyme" data-key="m8">8. Rime</option>
+            </select>
+            <button class="btn" id="btn-start-game" onclick="initGame('start')">Commencer le Jeu</button>
         </div>
-        <div id="game-content"></div>
+        <div id="game-area" class="card" style="display:none">
+            <div class="nav-group">
+                <button class="btn btn-nav" onclick="navGame(-1)">«</button>
+                <button class="btn btn-nav" onclick="navGame(1)">»</button>
+            </div>
+            <div id="game-content"></div>
+        </div>
     </div>
 </div>
 
@@ -183,57 +200,64 @@
         <h2 id="res-title"></h2>
         <p id="res-body" style="margin:15px 0;"></p>
         <div id="res-motivation" class="motivation-verse" style="color:gold; font-style:italic"></div>
-        <button class="btn" id="btn-close-res" onclick="document.getElementById('result-modal').style.display='none'">Fermer</button>
+        <button class="btn" id="btn-close-res">Fermer</button>
     </div>
 </div>
 
 <script>
-// --- 1. CONFIGURATION PWA (MANIFEST & SERVICE WORKER) ---
-const CACHE_NAME = 'kele-village-v3';
+// --- LOGIQUE PWA AVANCÉE ---
+const CACHE_NAME = 'kele-v6';
+let deferredPrompt;
 
-// Génération du manifest.json à la volée pour permettre l'installation
+// Configuration Manifest avec icônes multiples (Requis par Chrome pour l'installation)
 const manifest = {
     "name": "Kele Village Quran",
     "short_name": "KeleVillage",
-    "start_url": ".",
+    "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#000000",
     "theme_color": "#064e3b",
-    "icons": [{
-        "src": "https://cdn-icons-png.flaticon.com/512/2800/2800045.png",
-        "sizes": "512x512",
-        "type": "image/png",
-        "purpose": "any maskable"
-    }]
+    "icons": [
+        { "src": "1773229755524.png", "sizes": "192x192", "type": "image/png" },
+        { "src": "1773229755524.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    ]
 };
-const stringManifest = JSON.stringify(manifest);
-const blob = new Blob([stringManifest], {type: 'application/json'});
-document.getElementById('manifest-link').setAttribute('href', URL.createObjectURL(blob));
+document.getElementById('manifest-link').setAttribute('href', 'data:application/json;base64,' + btoa(JSON.stringify(manifest)));
 
-// Inscription du Service Worker pour le mode hors-ligne
-if ('serviceWorker' in navigator) {
-    const swCode = `
-        const CACHE_NAME = '${CACHE_NAME}';
-        self.addEventListener('install', e => self.skipWaiting());
-        self.addEventListener('activate', e => e.waitUntil(clients.claim()));
-        self.addEventListener('fetch', e => {
-            e.respondWith(
-                caches.match(e.request).then(res => res || fetch(e.request))
-            );
-        });
-    `;
-    const swBlob = new Blob([swCode], {type: 'application/javascript'});
-    navigator.serviceWorker.register(URL.createObjectURL(swBlob));
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('pwa-install-btn').style.display = 'block';
+});
+
+async function installPWA() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+        document.getElementById('pwa-install-btn').style.display = 'none';
+    }
+    deferredPrompt = null;
 }
 
-// --- 2. TRADUCTIONS ET ETATS ---
+if ('serviceWorker' in navigator) {
+    const sw = `
+    const CACHE = "${CACHE_NAME}";
+    self.addEventListener('install', e => self.skipWaiting());
+    self.addEventListener('fetch', e => {
+        e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+    });`;
+    navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(sw));
+}
+
+// --- LOGIQUE CORE ---
 let currentLang = 'fr';
 const translations = {
     fr: {
         title: "Lecture", memorize: "Mémorisation", reciter: "Récitateur", surah: "Sourate", start: "Début", end: "Fin", repeats: "Répétitions",
-        btn_start_lec: "Lancer la Lecture", config_game: "Défi", flow: "Progression", successive: "Successive", random: "Aléatoire",
-        mode: "Type de Jeu", btn_start_game: "Commencer le Jeu", btn_prev: "« Précédent", btn_next: "Suivant »", btn_close: "Fermer",
-        m1: "1. Mot Manquant", m2: "2. Ordonner le verset", m3: "3. Dictée Audio", m4: "4. Flash (Visuel)", m5: "5. Vrai ou Faux ?",
+        btn_start_lec: "Lancer la Lecture", config_game: "Configuration du Défi", flow: "Progression", successive: "Successive", random: "Aléatoire",
+        mode: "Mode de Jeu", btn_start_game: "Commencer le Jeu", btn_prev: "« Précédent", btn_next: "Suivant »", btn_close: "Fermer",
+        m1: "1. Mot Manquant", m2: "2. Ordonner le verset", m3: "3. Dictée Audio", m4: "4. Flash", m5: "5. Vrai ou Faux ?",
         m6: "6. Mot Pivot", m7: "7. Compteur de Mots", m8: "8. Rime", msg_win: "Excellent ! ✨", msg_lose: "Réessaie 📖",
         body_win: "C'est la bonne réponse.", body_lose: "Ce n'est pas tout à fait ça.", listen: "Écoutez et écrivez :", play: "Play", check: "Vérifier",
         q_pivot_before: "Quel mot AVANT :", q_pivot_after: "Quel mot APRÈS :", q_count: "Nombre de mots ?", q_flash_first: "Premier mot ?",
@@ -255,7 +279,6 @@ let surahs = [];
 let lecState = { current: 1, end: 1, repCur: 1, repMax: 1 };
 let gameState = { surah: 1, currentAyah: 1, mode: '', start: 1, end: 1, flow: 'successive' };
 
-// --- 3. INITIALISATION ---
 window.onload = async () => {
     try {
         const res = await fetch('https://api.alquran.cloud/v1/surah');
@@ -267,10 +290,9 @@ window.onload = async () => {
         });
         updateLimit('lec'); updateLimit('game');
         applyLanguage();
-    } catch (e) { alert("Connectez-vous une fois à Internet pour initialiser l'app."); }
+    } catch (e) { alert("Mode hors-ligne : Les données de base sont déjà chargées."); }
 };
 
-// --- 4. TÉLÉCHARGEMENT HORS-LIGNE (TEXTE + AUDIO) ---
 async function downloadContent(prefix) {
     const surahNum = document.getElementById(`${prefix}-surah`).value;
     const start = parseInt(document.getElementById(`${prefix}-start`).value);
@@ -288,31 +310,22 @@ async function downloadContent(prefix) {
     const total = end - start + 1;
     for (let i = start; i <= end; i++) {
         fill.style.width = ((i - start + 1) / total * 100) + '%';
-
-        const apiUrls = [
-            `https://api.alquran.cloud/v1/ayah/${surahNum}:${i}/editions/${reciter},fr.hamidullah,ar.medina`,
-            `https://api.alquran.cloud/v1/ayah/${surahNum}:${i}/editions/ar.medina,ar.alafasy,fr.hamidullah`
-        ];
-
-        for (let url of apiUrls) {
-            try {
-                const res = await fetch(url);
-                const data = await res.json();
-                await cache.put(url, new Response(JSON.stringify(data)));
-
-                const audioUrl = data.data[0].audio || (data.data[1] ? data.data[1].audio : null);
-                if (audioUrl) {
-                    const audioRes = await fetch(audioUrl);
-                    if (audioRes.ok) await cache.put(audioUrl, audioRes);
-                }
-            } catch (e) { console.error("Erreur verset " + i); }
-        }
+        const url = `https://api.alquran.cloud/v1/ayah/${surahNum}:${i}/editions/${reciter},fr.hamidullah,ar.medina`;
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            await cache.put(url, new Response(JSON.stringify(data)));
+            const audioUrl = data.data[0].audio;
+            if (audioUrl) {
+                const audioRes = await fetch(audioUrl);
+                if (audioRes.ok) await cache.put(audioUrl, audioRes);
+            }
+        } catch (e) {}
     }
     btn.textContent = "✅ INSTALLÉ HORS-LIGNE";
     setTimeout(() => { bar.style.display = 'none'; btn.disabled = false; }, 3000);
 }
 
-// --- 5. LOGIQUE CORE ---
 async function smartFetch(url) {
     const cache = await caches.open(CACHE_NAME);
     const cached = await cache.match(url);
@@ -335,24 +348,19 @@ async function playAyah() {
     const rec = document.getElementById('lec-reciter').value;
     const s = document.getElementById('lec-surah').value;
     const url = `https://api.alquran.cloud/v1/ayah/${s}:${lecState.current}/editions/${rec},fr.hamidullah,ar.medina`;
-    
     try {
         const data = await smartFetch(url);
         document.getElementById('lec-arabic').textContent = data.data[0].text;
         document.getElementById('lec-french').textContent = data.data[1].text;
         document.getElementById('lec-status').textContent = `Verset ${lecState.current} | Cycle ${lecState.repCur}/${lecState.repMax}`;
-        
         const p = document.getElementById('audio-player');
         p.src = data.data[0].audio;
         p.play();
-
         p.onended = () => {
             if (lecState.current < lecState.end) { lecState.current++; playAyah(); }
-            else if (lecState.repCur < lecState.repMax) { 
-                lecState.repCur++; lecState.current = parseInt(document.getElementById('lec-start').value); playAyah(); 
-            }
+            else if (lecState.repCur < lecState.repMax) { lecState.repCur++; lecState.current = parseInt(document.getElementById('lec-start').value); playAyah(); }
         };
-    } catch (e) { alert("Veuillez télécharger la sourate pour le mode hors-ligne."); }
+    } catch (e) { alert("Téléchargez d'abord ce contenu."); }
 }
 
 async function initGame(type) {
@@ -368,106 +376,6 @@ async function initGame(type) {
     loadChallenge();
 }
 
-async function loadChallenge() {
-    const t = translations[currentLang];
-    const container = document.getElementById('game-content');
-    container.innerHTML = "...";
-    const url = `https://api.alquran.cloud/v1/ayah/${gameState.surah}:${gameState.currentAyah}/editions/ar.medina,ar.alafasy,fr.hamidullah`;
-    
-    try {
-        const data = await smartFetch(url);
-        const arabic = data.data[0].text;
-        const audio = data.data[1].audio;
-        const french = data.data[2].text;
-        const words = arabic.split(' ');
-        container.innerHTML = "";
-
-        if (gameState.mode === 'missing') {
-            const idx = Math.floor(Math.random() * words.length);
-            const correct = words[idx];
-            const display = words.map((w, i) => i === idx ? '<span class="hidden-word">___</span>' : w).join(' ');
-            const opts = shuffle([correct, words[(idx+1)%words.length] || 'الله', 'مِنْ', 'فِي']);
-            container.innerHTML = `<div class="arabic">${display}</div><div class="translation-text">${french}</div><div class="game-options">${opts.map(o => `<div class="option-card" onclick="checkAnswer('${o}','${correct}')">${o}</div>`).join('')}</div>`;
-        } else if (gameState.mode === 'dictation') {
-            container.innerHTML = `<p style="text-align:center">${t.listen}</p><button class="btn" onclick="new Audio('${audio}').play()">${t.play}</button>
-                <div class="translation-text">${french}</div>
-                <textarea id="dict-in" style="margin-top:15px; direction:rtl; font-family:Amiri; height:100px"></textarea>
-                <button class="btn" onclick="checkDict('${arabic}')">${t.check}</button>
-                <div id="dict-sol" class="arabic" style="display:none; border-top:1px solid var(--gold); margin-top:10px">${arabic}</div>`;
-        } else if (gameState.mode === 'sequence') {
-            let shuff = shuffle([...words]); window.userSeq = [];
-            container.innerHTML = `<div id="seq-target" class="arabic" style="min-height:50px; border-bottom:1px solid var(--gold)"></div>
-                <div class="translation-text">${french}</div>
-                <div class="game-options">${shuff.map(w => `<div class="option-card" onclick="handleSeq(this,'${w}','${arabic}')">${w}</div>`).join('')}</div>`;
-        } else if (gameState.mode === 'flash') {
-            container.innerHTML = `<div id="flash-txt" class="arabic">${arabic}</div>`;
-            setTimeout(() => {
-                const f = document.getElementById('flash-txt'); if(!f) return; f.style.display = 'none';
-                const type = Math.floor(Math.random() * 3);
-                let q, correct;
-                if(type === 0) { q = t.q_flash_first; correct = words[0]; }
-                else if(type === 1) { q = t.q_flash_last; correct = words[words.length-1]; }
-                else { const m = Math.floor(words.length/2); q = `${t.q_flash_after} "${words[m]}" ?`; correct = words[m+1] || words[0]; }
-                container.innerHTML += `<p style="text-align:center">${q}</p><div class="game-options">${shuffle([correct, "إِنَّ", "يَا", "مَا"]).map(o => `<div class="option-card" onclick="checkAnswer('${o}','${correct}')">${o}</div>`).join('')}</div>`;
-            }, 3500);
-        } else if (gameState.mode === 'truefalse') {
-            const isTrue = Math.random() > 0.5;
-            const intruders = ["السماء", "الزمين", "يومئذ", "رسول"];
-            const testWord = isTrue ? words[Math.floor(Math.random()*words.length)] : intruders[Math.floor(Math.random()*intruders.length)];
-            container.innerHTML = `<p style="text-align:center">${t.q_truefalse}</p><div class="arabic" style="color:var(--gold)">${testWord}</div>
-                <div class="arabic" style="font-size:1.1rem; opacity:0.6">${arabic}</div>
-                <div class="game-options"><div class="option-card" onclick="checkAnswer(${isTrue}, true)">${currentLang === 'fr' ? 'OUI' : 'نعم'}</div><div class="option-card" onclick="checkAnswer(${!isTrue}, true)">${currentLang === 'fr' ? 'NON' : 'لا'}</div></div>`;
-        } else if (gameState.mode === 'pivot') {
-            const idx = Math.max(1, Math.floor(Math.random() * (words.length - 1)));
-            const pivot = words[idx]; const type = Math.random() > 0.5; const correct = type ? words[idx-1] : words[idx+1];
-            container.innerHTML = `<p style="text-align:center">${type ? t.q_pivot_before : t.q_pivot_after}</p><div class="arabic" style="color:var(--gold)">${pivot}</div>
-                <div class="game-options">${shuffle([correct, "الَّذِينَ", "آمَنُوا", "اللَّه"]).map(o => `<div class="option-card" onclick="checkAnswer('${o}','${correct}')">${o}</div>`).join('')}</div>`;
-        } else if (gameState.mode === 'wordcount') {
-            const correct = words.length; const opts = shuffle([correct, correct+1, correct-1, 10]);
-            container.innerHTML = `<div class="arabic">${arabic}</div><p style="text-align:center">${t.q_count}</p>
-                <div class="game-options">${opts.map(o => `<div class="option-card" onclick="checkAnswer(${o},${correct})">${o}</div>`).join('')}</div>`;
-        } else if (gameState.mode === 'rhyme') {
-            const last = words[words.length-1]; const display = words.slice(0, -1).join(' ') + ' ...';
-            container.innerHTML = `<div class="arabic">${display}</div><p style="text-align:center">${t.q_rhyme}</p>
-                <div class="game-options">${shuffle([last, "عليم", "بصير", "حكيم"]).map(o => `<div class="option-card" onclick="checkAnswer('${o}','${last}')">${o}</div>`).join('')}</div>`;
-        }
-    } catch (e) { container.innerHTML = "<p>Contenu non disponible hors-ligne.</p>"; }
-}
-
-// --- 6. UTILITAIRES ---
-function toggleLanguage() {
-    currentLang = currentLang === 'fr' ? 'ar' : 'fr';
-    document.body.className = currentLang === 'ar' ? 'rtl' : '';
-    applyLanguage();
-}
-
-function applyLanguage() {
-    const t = translations[currentLang];
-    document.getElementById('tab-lec-btn').textContent = t.title;
-    document.getElementById('tab-game-btn').textContent = t.memorize;
-    document.getElementById('btn-start-lec').textContent = t.btn_start_lec;
-    document.getElementById('btn-start-game').textContent = t.btn_start_game;
-    document.getElementById('btn-prev').textContent = t.btn_prev;
-    document.getElementById('btn-next').textContent = t.btn_next;
-    document.getElementById('btn-close-res').textContent = t.btn_close;
-    document.querySelectorAll('[data-key]').forEach(el => {
-        const key = el.getAttribute('data-key');
-        if(t[key]) el.textContent = t[key];
-    });
-}
-
-function updateLimit(p) {
-    const sNum = document.getElementById(`${p}-surah`).value;
-    const s = surahs.find(x => x.number == sNum);
-    if(s) document.getElementById(`${p}-end`).value = s.numberOfAyahs;
-}
-
-function showTab(id) {
-    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).style.display = 'block';
-}
-
 function navGame(dir) {
     if(gameState.flow === 'random' && dir > 0) {
         gameState.currentAyah = Math.floor(Math.random() * (gameState.end - gameState.start + 1)) + gameState.start;
@@ -478,21 +386,81 @@ function navGame(dir) {
     loadChallenge();
 }
 
+async function loadChallenge() {
+    const t = translations[currentLang];
+    const container = document.getElementById('game-content');
+    container.innerHTML = "...";
+    const url = `https://api.alquran.cloud/v1/ayah/${gameState.surah}:${gameState.currentAyah}/editions/ar.alafasy,fr.hamidullah,ar.medina`;
+    try {
+        const data = await smartFetch(url);
+        const arabic = data.data[2].text;
+        const audio = data.data[0].audio;
+        const french = data.data[1].text;
+        const words = arabic.split(' ');
+        container.innerHTML = "";
+
+        if (gameState.mode === 'missing') {
+            const idx = Math.floor(Math.random() * words.length);
+            const correct = words[idx];
+            const display = words.map((w, i) => i === idx ? '<span class="hidden-word">___</span>' : w).join(' ');
+            container.innerHTML = `<div class="arabic">${display}</div><div class="translation-text">${french}</div>
+                <div class="game-options">${shuffle([correct, "الله", "من", "في"]).map(o => `<div class="option-card" onclick="checkAnswer('${o}','${correct}')">${o}</div>`).join('')}</div>`;
+        } else if (gameState.mode === 'dictation') {
+            container.innerHTML = `<p style="text-align:center">${t.listen}</p><button class="btn" onclick="new Audio('${audio}').play()">${t.play}</button>
+                <div class="translation-text" style="margin-top:10px">${french}</div>
+                <textarea id="dict-in" style="margin-top:15px; direction:rtl; font-family:Amiri; height:100px"></textarea>
+                <button class="btn" onclick="checkDict('${arabic}')">${t.check}</button>
+                <div id="dict-sol" class="arabic" style="display:none; border-top:1px solid var(--gold); margin-top:10px">${arabic}</div>`;
+        } else if (gameState.mode === 'sequence') {
+            let shuff = shuffle([...words]); window.userSeq = [];
+            container.innerHTML = `<div id="seq-target" class="arabic" style="min-height:50px; border-bottom:1px solid var(--gold)"></div>
+                <div class="translation-text">${french}</div>
+                <div class="game-options">${shuff.map(w => `<div class="option-card" onclick="handleSeq(this,'${w}','${arabic}')">${w}</div>`).join('')}</div>`;
+        } else if (gameState.mode === 'flash') {
+            container.innerHTML = `<div id="flash-txt" class="arabic">${arabic}</div><div class="translation-text">${french}</div>`;
+            setTimeout(() => {
+                const f = document.getElementById('flash-txt'); if(!f) return; f.style.display = 'none';
+                const last = words[words.length-1];
+                container.innerHTML += `<p style="text-align:center">${t.q_flash_last}</p><div class="game-options">${shuffle([last, "إِنَّ", "يَا", "مَا"]).map(o => `<div class="option-card" onclick="checkAnswer('${o}','${last}')">${o}</div>`).join('')}</div>`;
+            }, 3500);
+        } else if (gameState.mode === 'truefalse') {
+            const testWord = words[0];
+            container.innerHTML = `<p style="text-align:center">${t.q_truefalse}</p><div class="arabic" style="color:var(--gold)">${testWord}</div>
+                <div class="arabic" style="font-size:1.1rem; opacity:0.6">${arabic}</div><div class="translation-text">${french}</div>
+                <div class="game-options"><div class="option-card" onclick="checkAnswer(true, true)">${currentLang === 'fr' ? 'OUI' : 'نعم'}</div><div class="option-card" onclick="checkAnswer(false, true)">${currentLang === 'fr' ? 'NON' : 'لا'}</div></div>`;
+        } else if (gameState.mode === 'pivot') {
+            const idx = Math.floor(words.length / 2);
+            const pivot = words[idx]; const correct = words[idx+1] || words[0];
+            container.innerHTML = `<p style="text-align:center">${t.q_pivot_after}</p><div class="arabic" style="color:var(--gold)">${pivot}</div><div class="translation-text">${french}</div>
+                <div class="game-options">${shuffle([correct, "آمَنُوا", "الله", "من"]).map(o => `<div class="option-card" onclick="checkAnswer('${o}','${correct}')">${o}</div>`).join('')}</div>`;
+        } else if (gameState.mode === 'wordcount') {
+            const correct = words.length;
+            container.innerHTML = `<div class="arabic">${arabic}</div><div class="translation-text">${french}</div><p style="text-align:center">${t.q_count}</p>
+                <div class="game-options">${shuffle([correct, correct+1, correct-1, 5]).map(o => `<div class="option-card" onclick="checkAnswer(${o},${correct})">${o}</div>`).join('')}</div>`;
+        } else if (gameState.mode === 'rhyme') {
+            const last = words[words.length-1];
+            container.innerHTML = `<div class="arabic">${words.slice(0,-1).join(' ')} ...</div><div class="translation-text">${french}</div><p style="text-align:center">${t.q_rhyme}</p>
+                <div class="game-options">${shuffle([last, "عليم", "بصير", "حكيم"]).map(o => `<div class="option-card" onclick="checkAnswer('${o}','${last}')">${o}</div>`).join('')}</div>`;
+        }
+    } catch (e) { container.innerHTML = "<p>Contenu non téléchargé.</p>"; }
+}
+
 function shuffle(a) { return a.sort(() => Math.random() - 0.5); }
 function normalize(t) { return t.replace(/[\u064B-\u0652]/g, "").replace(/[إأآ]/g, "ا").trim(); }
-
-function checkAnswer(sel, cor) {
-    if(sel == cor) { showResult(true); setTimeout(() => navGame(1), 1500); }
-    else showResult(false);
+function toggleLanguage() { currentLang = currentLang === 'fr' ? 'ar' : 'fr'; document.body.className = currentLang === 'ar' ? 'rtl' : ''; applyLanguage(); }
+function applyLanguage() {
+    const t = translations[currentLang];
+    document.getElementById('tab-lec-btn').textContent = t.title;
+    document.getElementById('tab-game-btn').textContent = t.memorize;
+    document.getElementById('btn-start-lec').textContent = t.btn_start_lec;
+    document.getElementById('btn-start-game').textContent = t.btn_start_game;
+    document.getElementById('btn-close-res').textContent = t.btn_close;
+    document.querySelectorAll('[data-key]').forEach(el => { const k = el.getAttribute('data-key'); if(t[k]) el.textContent = t[k]; });
 }
-
-function checkDict(correct) {
-    document.getElementById('dict-sol').style.display = 'block';
-    if(normalize(document.getElementById('dict-in').value) === normalize(correct)) {
-        showResult(true); setTimeout(() => navGame(1), 2000);
-    } else showResult(false);
-}
-
+function updateLimit(p) { const s = surahs.find(x => x.number == document.getElementById(`${p}-surah`).value); if(s) document.getElementById(`${p}-end`).value = s.numberOfAyahs; }
+function showTab(id) { document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none'); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(id).style.display = 'block'; }
+function checkAnswer(sel, cor) { if(sel == cor) { showResult(true); setTimeout(() => navGame(1), 1500); } else showResult(false); }
+function checkDict(correct) { document.getElementById('dict-sol').style.display = 'block'; if(normalize(document.getElementById('dict-in').value) === normalize(correct)) { showResult(true); setTimeout(() => navGame(1), 2000); } else showResult(false); }
 function handleSeq(el, w, full) {
     const target = full.split(' ');
     if(w === target[window.userSeq.length]) {
@@ -501,10 +469,8 @@ function handleSeq(el, w, full) {
         if(window.userSeq.length === target.length) { showResult(true); setTimeout(() => navGame(1), 1500); }
     } else { el.style.background = "rgba(255,0,0,0.3)"; setTimeout(()=>el.style.background="", 500); }
 }
-
 function showResult(win) {
-    const t = translations[currentLang];
-    const modal = document.getElementById('result-modal');
+    const t = translations[currentLang]; const modal = document.getElementById('result-modal');
     document.getElementById('res-title').textContent = win ? t.msg_win : t.msg_lose;
     document.getElementById('res-body').textContent = win ? t.body_win : t.body_lose;
     const m = win ? ["وَقُل رَّبِّ زِدْنِي عِلْمًا", "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا"] : ["إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", "وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا"];
@@ -513,4 +479,4 @@ function showResult(win) {
 }
 </script>
 </body>
-                                                                   </html>
+        </html>
